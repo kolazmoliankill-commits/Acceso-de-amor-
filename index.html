@@ -1,0 +1,138 @@
+# A<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Leslie</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&display=swap');
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; }
+        canvas { display: block; position: fixed; top: 0; left: 0; z-index: 1; }
+        
+        #ui-layer {
+            position: relative; z-index: 10; height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 100%);
+            transition: all 1.5s ease;
+        }
+
+        .glass-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 20px; border-radius: 30px;
+            text-align: center; width: 80%; max-width: 350px;
+            box-shadow: 0 0 40px rgba(255, 77, 166, 0.2);
+        }
+
+        input {
+            background: none; border: none; border-bottom: 2px solid #ff4da6;
+            color: white; font-size: 2rem; text-align: center; width: 80%;
+            outline: none; letter-spacing: 10px; margin: 20px 0;
+            font-family: serif;
+        }
+
+        .pista { color: #ff4da6; font-size: 0.7rem; cursor: pointer; text-decoration: underline; opacity: 0.6; }
+        
+        /* ESCENA PLAYA */
+        #playa-scene {
+            display: none; height: 100vh; width: 100%;
+            position: fixed; top: 0; left: 0; z-index: 5;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('playa.jpg');
+            background-size: cover; background-position: center;
+            flex-direction: column; align-items: center; justify-content: center;
+            animation: fadeIn 2s forwards;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div id="ui-layer">
+    <div class="glass-box" id="login-card">
+        <h2 style="color:white; font-weight:200; letter-spacing:4px;">CÓDIGO DE ACCESO</h2>
+        <input type="password" id="pin" maxlength="6" placeholder="******">
+        <p class="pista" onclick="alert('Pista: El día que nuestra historia comenzó (070226)')">¿Necesitas ayuda?</p>
+    </div>
+</div>
+
+<div id="playa-scene">
+    <h1 style="color:white; font-weight:200; text-align:center; padding:20px;">"Donde el mar se une con mi amor por ti..."</h1>
+    <audio id="vocal"><source src="audio.mp3" type="audio/mpeg"></audio>
+    <button onclick="fase3()" style="background:white; border:none; padding:15px 30px; border-radius:30px; margin-top:20px; cursor:pointer;">Continuar el viaje</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+    // MOTOR 3D AVANZADO
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // GEOMETRÍA DE LA FLOR (Mandala 3D)
+    const group = new THREE.Group();
+    const material = new THREE.MeshPhongMaterial({ 
+        color: 0xff4da6, shininess: 100, side: THREE.DoubleSide, 
+        transparent: true, opacity: 0.8, wireframe: true 
+    });
+
+    for (let i = 0; i < 12; i++) {
+        const petalGeom = new THREE.TorusKnotGeometry(0.3, 0.1, 100, 16);
+        const petal = new THREE.Mesh(petalGeom, material);
+        petal.rotation.z = (i / 12) * Math.PI * 2;
+        petal.position.x = Math.cos((i / 12) * Math.PI * 2) * 0.5;
+        petal.position.y = Math.sin((i / 12) * Math.PI * 2) * 0.5;
+        group.add(petal);
+    }
+    scene.add(group);
+
+    const light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(10, 10, 10);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0x404040));
+
+    camera.position.z = 2;
+
+    // ANIMACIÓN
+    function animate() {
+        requestAnimationFrame(animate);
+        group.rotation.y += 0.01;
+        group.rotation.x += 0.005;
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    // LÓGICA DE ACCESO
+    const pinInput = document.getElementById('pin');
+    const pass = "070226";
+
+    pinInput.addEventListener('input', () => {
+        if(pinInput.value === pass) {
+            // EFECTO DE APERTURA 3D
+            group.children.forEach((p, i) => {
+                new Promise(res => {
+                    setTimeout(() => {
+                        p.scale.set(3, 3, 3);
+                        p.material.wireframe = false;
+                        p.material.color.setHex(0xffffff);
+                    }, i * 50);
+                });
+            });
+
+            document.getElementById('ui-layer').style.opacity = "0";
+            setTimeout(() => {
+                document.getElementById('ui-layer').style.display = "none";
+                document.getElementById('playa-scene').style.display = "flex";
+                document.getElementById('vocal').play();
+            }, 1500);
+        }
+    });
+
+    function fase3() { alert("Pasando a los 3 objetos..."); }
+</script>
+</body>
+</html>
+cceso-de-amor-

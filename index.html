@@ -3,124 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Leslie</title>
+    <title>Para Leslie, Mi Universo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: #000; 
-            font-family: 'Quicksand', sans-serif; 
-            color: white; 
-            overflow: hidden; 
-            height: 100vh;
-        }
+        body { background: #000; font-family: 'Quicksand', sans-serif; color: white; overflow: hidden; height: 100vh; }
 
-        #video-fondo {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover; z-index: 1;
-            transition: opacity 1.5s ease;
-        }
+        /* --- FASE 1: SEGURIDAD CON VIDEO --- */
+        #video-fondo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; transition: opacity 1.5s ease; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2; }
 
-        /* Capa para que el video no opaque la interfaz */
-        .overlay {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Oscurece un poco el video */
-            z-index: 2;
-        }
+        #escena-acceso { position: relative; z-index: 10; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .titulo-amor { text-align: center; margin-bottom: 25px; }
+        h2 { font-weight: 700; letter-spacing: 3px; color: #ff4da6; text-shadow: 0 0 15px rgba(255, 77, 166, 0.8); }
+        .formato-guia { font-size: 0.7rem; color: #ffb3d9; letter-spacing: 2px; margin-top: 5px; }
 
-        #escena-acceso {
-            position: relative; z-index: 10;
-            height: 100vh; display: flex;
-            flex-direction: column; align-items: center;
-            justify-content: center;
-        }
+        .keypad-box { background: rgba(40, 0, 20, 0.6); backdrop-filter: blur(25px); padding: 30px; border-radius: 40px; border: 2px solid #ff4da6; box-shadow: 0 0 30px rgba(255, 77, 166, 0.3); text-align: center; }
+        .dots-container { display: flex; gap: 15px; justify-content: center; margin-bottom: 25px; }
+        .dot { width: 16px; height: 16px; border: 2px solid #ff4da6; border-radius: 50%; transition: 0.3s; }
+        .dot.active { background: #ff4da6; box-shadow: 0 0 15px #ff4da6; transform: scale(1.3); }
 
-        .titulo-amor {
-            text-align: center; margin-bottom: 25px;
-        }
-        h2 { 
-            font-weight: 700; letter-spacing: 3px; 
-            color: #ff4da6; text-shadow: 0 0 15px rgba(255, 77, 166, 0.8);
-        }
-        .formato-guia {
-            font-size: 0.7rem; color: #ffb3d9; letter-spacing: 2px; margin-top: 5px;
-        }
-
-        /* TECLADO COLOR AMOR */
-        .keypad-box {
-            background: rgba(40, 0, 20, 0.6); /* Tono rojizo oscuro traslúcido */
-            backdrop-filter: blur(25px);
-            padding: 30px; border-radius: 40px;
-            border: 2px solid #ff4da6; /* Borde color amor */
-            box-shadow: 0 0 30px rgba(255, 77, 166, 0.3);
-            text-align: center;
-        }
-
-        .dots-container {
-            display: flex; gap: 15px; justify-content: center; margin-bottom: 25px;
-        }
-        .dot { 
-            width: 16px; height: 16px; border: 2px solid #ff4da6; 
-            border-radius: 50%; transition: 0.3s; 
-        }
-        .dot.active { 
-            background: #ff4da6; box-shadow: 0 0 15px #ff4da6; transform: scale(1.3); 
-        }
-
-        .teclas {
-            display: grid; grid-template-columns: repeat(3, 75px); gap: 15px;
-        }
-        .tecla {
-            width: 75px; height: 75px; border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; cursor: pointer; transition: 0.2s;
-            border: 1px solid rgba(255, 77, 166, 0.2);
-            color: white; font-weight: 500;
-        }
+        .teclas { display: grid; grid-template-columns: repeat(3, 75px); gap: 15px; }
+        .tecla { width: 75px; height: 75px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255, 77, 166, 0.2); }
         .tecla:active { background: #ff4da6; transform: scale(0.9); }
 
-        /* BOMBILLA INTERACTIVA */
-        .hint-btn {
-            position: absolute; top: 40px; right: 40px;
-            font-size: 2.2rem; color: rgba(255, 235, 59, 0.4);
-            cursor: pointer; transition: 0.5s;
-            animation: glow 2s infinite alternate;
-        }
+        .hint-btn { position: absolute; top: 40px; right: 40px; font-size: 2.2rem; color: rgba(255, 235, 59, 0.4); cursor: pointer; transition: 0.5s; animation: glow 2s infinite alternate; }
         @keyframes glow { from { opacity: 0.4; } to { opacity: 1; text-shadow: 0 0 10px #ffeb3b; } }
         .hint-btn.on { color: #ffeb3b; }
 
-        /* ESCENA PLAYA */
-        #escena-playa {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('playa.jpg');
-            background-size: cover; background-position: center;
-            display: none; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 5;
-        }
+        /* --- FASE 2: PLAYA --- */
+        #escena-playa { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('playa.jpg'); background-size: cover; background-position: center; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 5; }
+        .btn-regalos { margin-top: 40px; padding: 15px 40px; background: #ff4da6; border: none; color: white; border-radius: 50px; font-weight: 600; cursor: pointer; box-shadow: 0 10px 30px rgba(255, 77, 166, 0.4); }
 
-        .btn-continuar {
-            margin-top: 40px; padding: 15px 40px;
-            background: #ff4da6; border: none; color: white;
-            border-radius: 50px; font-weight: 600; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(255, 77, 166, 0.4);
-        }
+        /* --- FASE 3: OBJETOS INTERACTIVOS --- */
+        #objetos-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; background: rgba(0,0,0,0.85); flex-direction: column; align-items: center; justify-content: center; gap: 40px; animation: fadeIn 1s forwards; }
+        .objeto { font-size: 60px; cursor: pointer; filter: drop-shadow(0 0 15px rgba(255, 77, 166, 0.8)); animation: flotarObj 3s infinite ease-in-out; transition: 0.3s; }
+        @keyframes flotarObj { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
+        .objeto:active { transform: scale(1.3); }
+
+        /* VENTANAS MODALES (Carta, Corazón, Foto) */
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5); width: 85%; max-width: 400px; background: #fff; color: #333; padding: 30px; border-radius: 30px; z-index: 30; text-align: center; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
+        .modal.active { display: block; transform: translate(-50%, -50%) scale(1); animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { from { transform: translate(-50%, -50%) scale(0.5); } to { transform: translate(-50%, -50%) scale(1); } }
+        .img-recuerdo { width: 100%; border-radius: 15px; margin-top: 15px; border: 3px solid #ff4da6; }
+        .btn-cerrar { margin-top: 25px; background: #ff4da6; color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; }
 
         .shake { animation: shake 0.4s; }
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <video autoplay muted loop playsinline id="video-fondo">
-        <source src="flores.mp4" type="video/mp4">
-    </video>
+    <video autoplay muted loop playsinline id="video-fondo"><source src="flores.mp4" type="video/mp4"></video>
     <div class="overlay" id="capa-oscura"></div>
+    <audio id="vocal" loop><source src="audio.mp3" type="audio/mpeg"></audio>
 
     <i class="fas fa-lightbulb hint-btn" id="luz" onclick="activarPista()"></i>
 
@@ -129,7 +68,6 @@
             <h2>NUESTRO INICIO</h2>
             <p class="formato-guia">Día / Mes / Año</p>
         </div>
-
         <div class="keypad-box" id="caja">
             <div class="dots-container">
                 <div class="dot"></div><div class="dot"></div><div class="dot"></div>
@@ -139,16 +77,45 @@
                 <div class="tecla" onclick="inputNum(1)">1</div><div class="tecla" onclick="inputNum(2)">2</div><div class="tecla" onclick="inputNum(3)">3</div>
                 <div class="tecla" onclick="inputNum(4)">4</div><div class="tecla" onclick="inputNum(5)">5</div><div class="tecla" onclick="inputNum(6)">6</div>
                 <div class="tecla" onclick="inputNum(7)">7</div><div class="tecla" onclick="inputNum(8)">8</div><div class="tecla" onclick="inputNum(9)">9</div>
-                <div></div><div class="tecla" onclick="inputNum(0)">0</div>
-                <div class="tecla" onclick="borrar()"><i class="fas fa-backspace"></i></div>
+                <div class="tecla" onclick="borrar()"><i class="fas fa-trash-alt"></i></div>
+                <div class="tecla" onclick="inputNum(0)">0</div>
+                <div class="tecla" onclick="borrarUltimo()"><i class="fas fa-backspace"></i></div>
             </div>
         </div>
     </div>
 
     <div id="escena-playa">
-        <h1 style="font-size: 2.2rem; text-align: center; font-weight: 300;">"Bienvenida a nuestro rincón..."</h1>
-        <audio id="vocal" loop><source src="audio.mp3" type="audio/mpeg"></audio>
-        <button class="btn-continuar" onclick="siguiente()">CONTINUAR ➔</button>
+        <h1 style="font-size: 2rem; text-align: center; font-weight: 300;">"Bienvenida a nuestro rincón especial..."</h1>
+        <button class="btn-regalos" onclick="mostrarObjetos()">VER TUS REGALOS ❤️</button>
+    </div>
+
+    <div id="objetos-container">
+        <div class="objeto" onclick="abrirModal('modal-corazon')">💖</div>
+        <div class="objeto" onclick="abrirModal('modal-carta')">✉️</div>
+        <div class="objeto" onclick="abrirModal('modal-foto')">🖼️</div>
+        <p style="font-size: 0.8rem; opacity: 0.7;">Toca cada regalo para abrirlo</p>
+    </div>
+
+    <div id="modal-corazon" class="modal">
+        <h3 style="color:#ff4da6;">Mi Sentimiento</h3>
+        <p style="margin-top:15px; line-height: 1.5;">"En este pequeño corazón no cabe todo lo que siento por ti, pero quiero que sepas que eres mi lugar favorito en el mundo."</p>
+        <button class="btn-cerrar" onclick="cerrarModales()">Cerrar</button>
+    </div>
+
+    <div id="modal-carta" class="modal">
+        <h3 style="color:#ff4da6;">Nuestra Historia</h3>
+        <div style="height: 180px; overflow-y: auto; text-align: left; font-size: 0.9rem; margin-top: 15px; padding-right: 5px;">
+            Mi querida Leslie,<br><br>
+            Desde aquel 07 de febrero mi vida tomó un color diferente. Eres mi compañera de sueños, la persona con la que quiero compartir cada logro y cada risa. Gracias por ser tú, por tu paciencia y por este amor tan bonito que construimos día a día...
+        </div>
+        <button class="btn-cerrar" onclick="cerrarModales()">Cerrar</button>
+    </div>
+
+    <div id="modal-foto" class="modal">
+        <h3 style="color:#ff4da6;">Tú y Yo</h3>
+        <img src="nosotros.jpg" class="img-recuerdo" alt="Nuestra Foto">
+        <p style="font-size: 0.8rem; margin-top: 10px; font-style: italic;">¡El momento más lindo a tu lado!</p>
+        <button class="btn-cerrar" onclick="cerrarModales()">Cerrar</button>
     </div>
 
     <script>
@@ -172,22 +139,17 @@
             });
         }
 
-        function borrar() {
-            code = "";
-            actualizarPuntos();
-        }
+        function borrar() { code = ""; actualizarPuntos(); }
+        function borrarUltimo() { code = code.slice(0, -1); actualizarPuntos(); }
 
         function activarPista() {
             document.getElementById('luz').classList.add('on');
-            alert("Recuerda: El día que nuestra historia comenzó (Día/Mes/Año) ❤️");
+            alert("Recuerda nuestra fecha de aniversario: Día/Mes/Año ❤️");
         }
 
         function fallo() {
             document.getElementById('caja').classList.add('shake');
-            setTimeout(() => {
-                document.getElementById('caja').classList.remove('shake');
-                borrar();
-            }, 400);
+            setTimeout(() => { document.getElementById('caja').classList.remove('shake'); borrar(); }, 400);
         }
 
         function entrar() {
@@ -196,15 +158,17 @@
             document.getElementById('escena-acceso').style.opacity = "0";
             setTimeout(() => {
                 document.getElementById('escena-acceso').style.display = "none";
-                document.getElementById('video-fondo').style.display = "none";
                 document.getElementById('escena-playa').style.display = "flex";
                 document.getElementById('vocal').play();
             }, 1000);
         }
 
-        function siguiente() {
-            alert("Cargando la Fase 3: La Carta, el Corazón y la Foto...");
+        function mostrarObjetos() {
+            document.getElementById('objetos-container').style.display = "flex";
         }
+
+        function abrirModal(id) { document.getElementById(id).classList.add('active'); }
+        function cerrarModales() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
     </script>
 </body>
 </html>

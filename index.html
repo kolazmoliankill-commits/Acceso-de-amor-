@@ -6,58 +6,57 @@
     <title>Para Leslie</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             background: #000; 
-            font-family: 'Montserrat', sans-serif; 
+            font-family: 'Quicksand', sans-serif; 
             color: white; 
             overflow: hidden; 
             height: 100vh;
         }
 
-        /* VIDEO DE FONDO - SOLO PARA SEGURIDAD */
         #video-fondo {
-            position: fixed;
-            top: 0; left: 0;
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            object-fit: cover;
-            z-index: 1;
+            object-fit: cover; z-index: 1;
             transition: opacity 1.5s ease;
         }
 
-        /* CAPA OSCURA PARA QUE SE VEA EL TECLADO */
+        /* Capa para que el video no opaque la interfaz */
         .overlay {
-            position: fixed;
-            top: 0; left: 0;
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5); /* Oscurece un poco el video */
             z-index: 2;
         }
 
-        /* CONTENEDOR PRINCIPAL DE SEGURIDAD */
         #escena-acceso {
-            position: relative;
-            z-index: 10;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            position: relative; z-index: 10;
+            height: 100vh; display: flex;
+            flex-direction: column; align-items: center;
             justify-content: center;
-            transition: all 1s ease;
         }
 
-        h2 { font-weight: 200; letter-spacing: 5px; margin-bottom: 30px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .titulo-amor {
+            text-align: center; margin-bottom: 25px;
+        }
+        h2 { 
+            font-weight: 700; letter-spacing: 3px; 
+            color: #ff4da6; text-shadow: 0 0 15px rgba(255, 77, 166, 0.8);
+        }
+        .formato-guia {
+            font-size: 0.7rem; color: #ffb3d9; letter-spacing: 2px; margin-top: 5px;
+        }
 
-        /* TECLADO DE CRISTAL */
+        /* TECLADO COLOR AMOR */
         .keypad-box {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            padding: 30px;
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: rgba(40, 0, 20, 0.6); /* Tono rojizo oscuro traslúcido */
+            backdrop-filter: blur(25px);
+            padding: 30px; border-radius: 40px;
+            border: 2px solid #ff4da6; /* Borde color amor */
+            box-shadow: 0 0 30px rgba(255, 77, 166, 0.3);
             text-align: center;
         }
 
@@ -65,7 +64,7 @@
             display: flex; gap: 15px; justify-content: center; margin-bottom: 25px;
         }
         .dot { 
-            width: 15px; height: 15px; border: 2px solid #ff4da6; 
+            width: 16px; height: 16px; border: 2px solid #ff4da6; 
             border-radius: 50%; transition: 0.3s; 
         }
         .dot.active { 
@@ -77,43 +76,41 @@
         }
         .tecla {
             width: 75px; height: 75px; border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
             display: flex; align-items: center; justify-content: center;
             font-size: 1.6rem; cursor: pointer; transition: 0.2s;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 77, 166, 0.2);
+            color: white; font-weight: 500;
         }
-        .tecla:active { background: #ff4da6; transform: scale(0.9); border-color: white; }
+        .tecla:active { background: #ff4da6; transform: scale(0.9); }
 
-        /* BOMBILLA DE PISTA */
+        /* BOMBILLA INTERACTIVA */
         .hint-btn {
             position: absolute; top: 40px; right: 40px;
-            font-size: 2rem; color: rgba(255,255,255,0.3);
+            font-size: 2.2rem; color: rgba(255, 235, 59, 0.4);
             cursor: pointer; transition: 0.5s;
+            animation: glow 2s infinite alternate;
         }
-        .hint-btn.on { color: #ffeb3b; text-shadow: 0 0 20px #ffeb3b; }
+        @keyframes glow { from { opacity: 0.4; } to { opacity: 1; text-shadow: 0 0 10px #ffeb3b; } }
+        .hint-btn.on { color: #ffeb3b; }
 
-        /* ESCENA 2: LA PLAYA (OCULTA AL INICIO) */
+        /* ESCENA PLAYA */
         #escena-playa {
-            position: fixed;
-            top: 0; left: 0;
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url('playa.jpg');
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('playa.jpg');
             background-size: cover; background-position: center;
             display: none; flex-direction: column;
-            align-items: center; justify-content: center;
-            z-index: 5;
-            animation: zoomIn 10s infinite alternate;
+            align-items: center; justify-content: center; z-index: 5;
         }
-        @keyframes zoomIn { from { transform: scale(1); } to { transform: scale(1.1); } }
 
         .btn-continuar {
             margin-top: 40px; padding: 15px 40px;
             background: #ff4da6; border: none; color: white;
-            border-radius: 50px; font-weight: 600; letter-spacing: 2px;
-            cursor: pointer; box-shadow: 0 10px 30px rgba(255, 77, 166, 0.4);
+            border-radius: 50px; font-weight: 600; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 77, 166, 0.4);
         }
 
-        /* ANIMACIÓN DE ERROR */
         .shake { animation: shake 0.4s; }
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }
     </style>
@@ -128,7 +125,11 @@
     <i class="fas fa-lightbulb hint-btn" id="luz" onclick="activarPista()"></i>
 
     <div id="escena-acceso">
-        <h2>PORTAL PRIVADO</h2>
+        <div class="titulo-amor">
+            <h2>NUESTRO INICIO</h2>
+            <p class="formato-guia">Día / Mes / Año</p>
+        </div>
+
         <div class="keypad-box" id="caja">
             <div class="dots-container">
                 <div class="dot"></div><div class="dot"></div><div class="dot"></div>
@@ -145,15 +146,14 @@
     </div>
 
     <div id="escena-playa">
-        <h1 style="font-size: 2.5rem; font-weight: 200; text-align: center;">"Escucha mi voz..."</h1>
-        <p style="margin-top: 10px; opacity: 0.8;">Cierra los ojos y siente el mar.</p>
+        <h1 style="font-size: 2.2rem; text-align: center; font-weight: 300;">"Bienvenida a nuestro rincón..."</h1>
         <audio id="vocal" loop><source src="audio.mp3" type="audio/mpeg"></audio>
-        <button class="btn-continuar" onclick="siguiente()">EXPLORAR RECUERDOS ➔</button>
+        <button class="btn-continuar" onclick="siguiente()">CONTINUAR ➔</button>
     </div>
 
     <script>
         let code = "";
-        const pass = "070226"; // TU FECHA
+        const pass = "070226"; 
 
         function inputNum(n) {
             if (code.length < 6) {
@@ -179,7 +179,7 @@
 
         function activarPista() {
             document.getElementById('luz').classList.add('on');
-            alert("Pista: El día que nuestra historia comenzó... (070226)");
+            alert("Recuerda: El día que nuestra historia comenzó (Día/Mes/Año) ❤️");
         }
 
         function fallo() {
@@ -191,22 +191,19 @@
         }
 
         function entrar() {
-            // DESVANECER VIDEO Y ACCESO
             document.getElementById('video-fondo').style.opacity = "0";
             document.getElementById('capa-oscura').style.opacity = "0";
             document.getElementById('escena-acceso').style.opacity = "0";
-            document.getElementById('escena-acceso').style.transform = "scale(0.9)";
-
             setTimeout(() => {
                 document.getElementById('escena-acceso').style.display = "none";
                 document.getElementById('video-fondo').style.display = "none";
                 document.getElementById('escena-playa').style.display = "flex";
                 document.getElementById('vocal').play();
-            }, 1500);
+            }, 1000);
         }
 
         function siguiente() {
-            alert("Preparando los 3 objetos mágicos...");
+            alert("Cargando la Fase 3: La Carta, el Corazón y la Foto...");
         }
     </script>
 </body>
